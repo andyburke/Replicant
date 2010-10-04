@@ -1,5 +1,5 @@
 ########################################################################
-Tools Coding Guidelines
+Replicant Coding Guidelines
 
 
 
@@ -27,15 +27,26 @@ Utility Classes
 Enums
 -----
 * Enums should be placed in their own explicit namespace - so as not to contaminate the containing namespace with extraneous symbols
-** namespace name is plural - as the container for all of the enum symbols; the namespace name is used to refer to individual enum values as FileAccessFlags::Append rather than just Append
-* enum – used to declare variables; the name is
-** plural if an enum variable may contain more than one of the enum flags: and cannot share the same name as the encapsulating namespace: FindFileFlags::FindFlags flags
-** singular if the enum values are mutually exclusive, allowing you to declare a variable that is ONE of many enum values: FileAccessFlags::FileMode mode
-* enum member names should be CamelCase, with leading uppercase character; they should NOT be all caps or prefixed with a character indicator like “k_”
-* use a typedef to shorten enum variable declaration – shortening FileAccessFlags::FileModes modes to FileModes modes; enum typedef shares the same name as the enum
+** Namespace name should be plural
+*** As the container for all of the enum symbols; the namespace name is used to refer to individual enum values as FileAccessFlags::Append rather than just Append
+** Enum – used to declare variables
+*** The name should be plural if an enum variable may contain more than one of the enum flags, eg:
+      
+      FindFileFlags::FindFlags flags;
 
-Note: When you refer to an enum inside a type, you do not need to specify the name of the enum – which results in the following compiler warning:
- warning C4482: nonstandard extension used: enum 'enum' used in qualified name
+*** The name should be singular if the enum values are mutually exclusive, allowing you to declare a variable that is ONE of many enum values, eg:
+
+      FileAccessFlags::FileMode mode;
+      
+** Enum member names should be CamelCase, with leading uppercase character
+** Enum member names should NOT be all caps or prefixed with a character indicator like “k_”
+** Use a typedef to shorten enum variable declaration, eg:
+
+      typedef FileAccessFlags::FileAccessFlag FileAccessFlag;
+      
+** Note: When you refer to an enum inside a type, you do not need to specify the name of the enum – which results in the following compiler warning:
+       
+       warning C4482: nonstandard extension used: enum 'enum' used in qualified name
 
 ---------------------------------EXAMPLE--------------------------------
   namespace FileAccessFlags
@@ -50,46 +61,25 @@ Note: When you refer to an enum inside a type, you do not need to specify the na
       SequentialAccess  = 1 << 5,
     };
   }
-  typedef u32 FileAccessFlag;
+  typedef FileAccessFlags::FileAccessFlag FileAccessFlag;
 
   ...
 
   void MyFunc( FileAccessFlag flags )
   {
     if ( flags & FileAccessFlags::Append )
-    return OPEN_EXISTING;
+    { 
+      return OPEN_EXISTING;
+    }
   }
 
   ...
 
   FileAccessFlag flags = ( FileAccessFlag ) ( FileAccessFlags::Append | FileAccessFlags::Write );
+  FileAccessFlag mode = ( FileAccessFlag ) FileAccessFlags::SequentialAccess;
+  
 ------------------------------/END EXAMPLE------------------------------
   
----------------------------------EXAMPLE--------------------------------
-  namespace BrowserDisplayModes
-  {
-    enum BrowserDisplayMode
-    {
-      Details = 0,
-      List,
-      Thumbnail,
-    };
-  }
-  typedef BrowserDisplayModes::BrowserDisplayMode BrowserDisplayMode;
-
-  ...
-
-  void MyFunc( BrowserDisplayMode modes )
-  {
-    if ( modes & BrowserDisplayModes::Append )
-    return OPEN_EXISTING;
-  }
-
-  ...
-
-  BrowserDisplayMode modes = ( BrowserDisplayMode ) ( BrowserDisplayModes::Append | BrowserDisplayModes::Write );
-------------------------------/END EXAMPLE------------------------------
-
 
 ---------
 Variables

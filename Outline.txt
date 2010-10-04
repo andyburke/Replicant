@@ -1,0 +1,109 @@
+Startup
+=========
+
+- Start up
+- Parse configuration file
+  - Contains a list of directories
+    - account, GUID, name, local location
+- Iterate through server directories
+  - Check with server/backing store that they are valid
+  - Obtain file list/md5s
+  - Ensure they exist in proper local location
+  - Iterate through local files in each directory
+      - If missing:
+        - Get file from server
+      - If md5 mismatch
+        - File is newer: update server with new file
+        - File is older: update local file from server
+- Loop, waiting for changes
+  - Server change message
+    - Delete/create local file
+  - Local file change
+    - Notify server, send new file        
+
+Use case: rollback and pin
+==========================
+
+- User right-clicks in a synced directory
+- User selects a rollback
+- User enters a time (default 1 hour)
+- Set directory to pinned state
+  - Set pinned time
+- Query server for file list at that time
+  - Iterate over local files
+    - If not in server list
+      - Has been uploaded?
+        - Yes: do nothing
+        - No: upload to server
+      - Remove from local
+    - If in server list and newer than server
+      - Roll back to server state
+  - Iterate over server files
+    - If not in local store
+      - Download from server to reflect -1 hour state
+- Loop, waiting for changes
+  - Server change message
+    - Take no action on physical disk due to pinned state
+  - Local file change
+    - Notify server, send new file
+
+Update Loop
+===========
+
+- Pump
+  - Server change message
+    - Update file
+      - If pinned
+        - Disregard
+      
+      - If file exists locally
+        - If message is 'delete file'
+          - Verify md5 matches last known server md5
+            - Matches:
+              - Delete file
+            - Mismatch:
+              - Upload file to server
+              - Delete file
+          - Return
+              
+        - Compare md5
+          - Match: update local db
+          - Mismatch: check file time
+            - Local newer
+              - Upload to server as new rev
+            - Local older
+              - Upload to server as older rev
+              - Replace local copy with newer file
+
+      - If file does not exist locally
+        - If message is 'delete file'
+          - Return
+        - Create file
+        - Update local db
+             
+  - Local file change
+    - Notify server, send new file
+
+Core
+====
+
+UI
+====
+  - Tray icon
+    - Listens for core events, reflects state in UI
+    - Provides user control:
+      - Pause/Run
+      - Enter a status
+      - Statistics
+      - Preferences
+      - If only a single directory configured, double-click opens it
+      - If multiple directories, double-click opens a menu with a list
+  - Explorer integration
+    - Right-click menu allows:
+      - Pause a single directory
+      - Roll a directory back and 'pin' it
+    - Folder overlays indicate:
+      - Syncing
+      - Synced
+      - Pinned
+      - Error
