@@ -83,9 +83,8 @@ Update Loop
              
   - Local file change
     - Notify server, send new file
-
-Core
-====
+    
+  - Sleep
 
 UI
 ====
