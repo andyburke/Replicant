@@ -51,7 +51,7 @@ Update Loop
 ===========
 
 - Pump
-  - Server change message
+  - Server change message/Peer change message
     - Update file
       - If pinned
         - Disregard
@@ -83,6 +83,10 @@ Update Loop
              
   - Local file change
     - Notify server, send new file
+    - Notify all peers who share directory, send new file
+  
+  - Peer connection
+    - Add to list of connected peers
     
   - Sleep
 

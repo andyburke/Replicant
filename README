@@ -19,6 +19,10 @@ the following features:
     - When a directory changes from 'pinned' to 'unpinned':
       - Server updates are retrieved and processed
       - Any conflicts are presented to the user for resolution
+  - Peer to Peer support
+    - Changes made on machines on the same network that share a directory (or more)
+      will be replicated via Peer to Peer connection, rather than necessitating a
+      trip to the server
   - Multiple directory support
     - Support for replicating multiple directories at various local locations
   - Multiple account support
