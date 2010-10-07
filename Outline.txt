@@ -1,3 +1,49 @@
+Proposed Classes
+================
+
+//
+// Container for information about a specific file
+//
+FileInfo
+  m_Id; // unique identifier for this file
+  m_Path; // path relative to the top-level directory that contains this file
+  m_Revision; // revision number of this file
+  m_Hash; // md5 hash of the file contents of this revision
+
+//
+// Base class for all storage systems
+//
+
+StorageSystem
+    // gets the file list for the given directory
+    // if a time is specified, get the file list at that point in time
+    void GetFileList( const Path& directory, <vector FileInfo>&, time (optional) )
+
+    // commit an update of a file to the storage system
+    bool UpdateFile( const FileInfo& )
+
+    // get a file from the storage system
+    bool GetFile( const FileInfo& )
+
+//
+// A storage system backed by a local location
+//
+LocalStorage isa StorageSystem
+
+//
+// A storage system backed by a server
+//
+ServerStorage isa StorageSystem
+
+//
+// A storage system backed by Amazon's S3
+//
+//   Maybe it's possible to use Amazon's DB services instead of having a server in this case?
+//   If not, then S3Storage would probably be a part of the server rather than the client
+//
+S3Storage isa StorageSystem
+
+
 Startup
 =========
 
