@@ -1,3 +1,8 @@
+Relevant Links/Research
+=======================
+
+http://rsync.samba.org/tech_report/node2.html
+
 Proposed Classes
 ================
 
